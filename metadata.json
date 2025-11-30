@@ -1,0 +1,7 @@
+{
+  "name": "CineVoz - Audiodescrição IA",
+  "description": "Uma aplicação de acessibilidade que utiliza IA para gerar audiodescrição sincronizada em tempo real para filmes e vídeos.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

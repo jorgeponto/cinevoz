@@ -37,6 +37,31 @@ export function createPcmBlob(data: Float32Array): Blob {
   };
 }
 
+/**
+ * Downsamples audio buffer from any source rate to 16000Hz required by Gemini.
+ * Uses linear interpolation.
+ */
+export function downsampleTo16k(buffer: Float32Array, inputSampleRate: number): Float32Array {
+  if (inputSampleRate === PCM_SAMPLE_RATE_INPUT) {
+    return buffer;
+  }
+
+  const ratio = inputSampleRate / PCM_SAMPLE_RATE_INPUT;
+  const newLength = Math.round(buffer.length / ratio);
+  const result = new Float32Array(newLength);
+  
+  for (let i = 0; i < newLength; i++) {
+    const originalIndex = i * ratio;
+    const index1 = Math.floor(originalIndex);
+    const index2 = Math.min(index1 + 1, buffer.length - 1);
+    const fraction = originalIndex - index1;
+    
+    // Linear interpolation
+    result[i] = buffer[index1] * (1 - fraction) + buffer[index2] * fraction;
+  }
+  return result;
+}
+
 export async function decodeAudioData(
   data: Uint8Array,
   ctx: AudioContext,
